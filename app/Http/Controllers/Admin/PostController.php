@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -45,10 +46,10 @@ class PostController extends Controller
     public function store(Request $request)
     {
 
-        // $required->validate([
+        // $request->validate([
         //     'title' => 'required|string|min:5|max:50|unique:posts',
         //     'content' => 'required|string',
-        //     'image' => 'nullable|url',
+        //     'image' => 'nullable|image|mimes:jpeg,jpg,png',
         //     'category_id' => 'nullable|exists:categories,id',
         //     'tags' => 'nullable|exists:tags,id',
         // ], [
@@ -57,7 +58,8 @@ class PostController extends Controller
         //     'title.min' => 'Il titolo deve avere almeno :min caratteri',
         //     'title.max' => 'Il titolo deve avere almeno :max caratteri',
         //     'title.unique' => "Esiste già un post dal $request->title",
-        //     'image.url' => 'Url dell\'immagine non valido',
+        //     'image.image' => 'Il file caricato non è di tipo immagine',
+        //     'image.mimes' => 'Le immagini ammesse sono solo in formato .jpeg, .jpg o .png',
         //     'category_id.exists' => 'Non esiste una categoria associabile',
         //     'tags.exists' => 'Uno dei tag non è valido',
         // ]);
@@ -71,6 +73,11 @@ class PostController extends Controller
         $post->fill($data);
 
         $post->user_id = Auth::id();
+
+        if(array_key_exists('image', $data)){
+            $image_url = Storage::put('posts', $data['image']);
+            $post->image = $image_url;
+        };
 
         $post->save();
 
@@ -125,6 +132,12 @@ class PostController extends Controller
 
         $data['slug'] = Str::slug($data['title'], '-');
 
+        if(array_key_exists('image', $data)){
+            if($post->image) Storage::delete($post->image);
+            $image_url = Storage::put('posts', $data['image']);
+            $post->image = $image_url;
+        };
+
         $post->update($data);
 
         if(!array_key_exists('tags', $data)) $post->tags()->detach();
@@ -150,6 +163,8 @@ class PostController extends Controller
         // }
 
         if(count($post->tags)) $post->tags->detach();
+
+        if($post->image) Storage::delete($post->image);
         
         $post->delete();
 

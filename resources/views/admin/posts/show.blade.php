@@ -8,7 +8,7 @@
     <main>
         <div class="clearfix">
             @if ($post->image)
-                <img class="float-left mr-2 img-fluid" src="{{ $post->image }}" alt="{{ $post->slug }}">  
+                <img class="float-left mr-2 img-fluid" width="100px" src="{{ asset('storage/'.$post->image) }}" alt="{{ $post->slug }}">  
             @endif
             <div class="mb-2">
                 <strong>Categoria: </strong>

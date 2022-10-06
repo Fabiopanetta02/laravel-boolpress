@@ -1,8 +1,8 @@
 @if ($post->exists)
-<form action="{{ route('admin.posts.update', $post) }}" method="POST">
+<form action="{{ route('admin.posts.update', $post) }}" enctype="multipart/form-data" method="POST">
     @method('PUT')
 @else
-<form action="{{ route('admin.posts.store') }}" method="POST">  
+<form action="{{ route('admin.posts.store') }}" enctype="multipart/form-data" method="POST"> 
 @endif
     @csrf
     <div class="row">
@@ -33,11 +33,12 @@
         <div class="col-11">
             <div class="form-group">
                 <label for="image">Immagine</label>
-                <input type="url" class="form-control" id="image-field" name="image" value="{{ old('image', $post->image) }}">
+                <input type="file" class="@error('image') is-invalid @enderror" id="image-field" name="image">
             </div>
         </div>
         <div class="col-1">
-            <img src="{{ $post->image ?? "https://www.runningin.info/wp-content/uploads/2018/07/no-image.jpg" }}" alt="post image preview" id="preview" class="img-fluid">
+            <img src="{{ $post->image ? asset('storage/'.$post->image) : 'https://www.runningin.info/wp-content/uploads/2018/07/no-image.jpg'}}" 
+                alt="{{ $post->image ? $post->title : 'placeholder' }}" class="img-fluid" id="preview">
         </div>
         @if(count($tags))
             <div class="col-12">

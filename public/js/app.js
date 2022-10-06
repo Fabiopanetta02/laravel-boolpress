@@ -37384,9 +37384,14 @@ var imageField = document.getElementById('image-field');
 imageField.addEventListener('input', function () {
   var _imageField$value;
 
-  // if (imageField.value) preview.src = imageField.value;
-  // else preview.src = placeholder;
-  preview.src = (_imageField$value = imageField.value) !== null && _imageField$value !== void 0 ? _imageField$value : placeholder;
+  if (imageField.files && imageField.files[0]) {
+    var reader = new FileReader();
+    reader.readAsDataURL(imageField.files[0]);
+
+    reader.onload = function (event) {
+      preview.src = event.target.result;
+    };
+  } else preview.src = (_imageField$value = imageField.value) !== null && _imageField$value !== void 0 ? _imageField$value : placeholder;
 });
 
 /***/ }),

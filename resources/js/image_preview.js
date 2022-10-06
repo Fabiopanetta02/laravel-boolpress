@@ -3,8 +3,13 @@ const preview = document.getElementById('preview');
 const imageField = document.getElementById('image-field');
 
 imageField.addEventListener('input', () =>{
-    // if (imageField.value) preview.src = imageField.value;
-    // else preview.src = placeholder;
 
-    preview.src = imageField.value ?? placeholder;
+    if(imageField.files && imageField.files[0]){
+        let reader = new FileReader();
+
+        reader.readAsDataURL(imageField.files[0]);
+        reader.onload = event => {
+            preview.src = event.target.result; 
+        }
+    } else preview.src = imageField.value ?? placeholder;
 })
