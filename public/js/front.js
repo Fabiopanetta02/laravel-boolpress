@@ -2055,7 +2055,9 @@ __webpack_require__.r(__webpack_exports__);
       axios.get("http://localhost:8000/api/posts/" + this.$route.params.slug).then(function (res) {
         _this.post = res.data;
       })["catch"](function (err) {
-        console.error(err);
+        _this.$router.push({
+          name: "home"
+        });
       }).then(function () {
         _this.isLoading = false;
       });

@@ -30,7 +30,7 @@ export default {
                 this.post = res.data;
             })
             .catch((err) => {
-                console.error(err);
+                this.$router.push({ name: "home" });
             })
             .then(() => {
                 this.isLoading = false;
